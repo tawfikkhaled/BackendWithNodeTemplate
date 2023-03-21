@@ -4,7 +4,7 @@ import { hostname } from "os"
 import * as fs from "fs"
 import * as https from "https"
 import * as http from "http"
-
+import * as path from "path"
 
 var privateKey  = fs.readFileSync( __dirname + '/sslcert/server.key', 'utf8');
 var certificate = fs.readFileSync(__dirname + '/sslcert/server.crt', 'utf8');
@@ -32,14 +32,18 @@ app.use('/api-docs', function(req, res, next){
     next();
 }, swaggerUi.serveFiles(swaggerDocument, swaggerOptions), swaggerUi.setup());
 
-app.use('/static', express.static(__dirname + '/public'));
+
+app.use("/static", express.static(path.join(__dirname,'../dist/public')));
+
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
 app.get("/api", (req, res) => {
     res.json({res:"not done yet tawfik"})
 })
 
-app.get("/", (req, res) => {
-    res.json({res:"not done yet"})
-})
+
 
 var httpsServer = https.createServer(credentials, app)
 var httpServer = http.createServer(app);
